@@ -188,7 +188,7 @@ int main(void)
 	  	 	/*if(xb&0x80)
 	  	 		  	 	  {
 
-	  	 		  	 	  //Az x kÈtkomplement·lis ·talakÌt·sa
+	  	 		  	 	  //Az x k√©tkomplement√°lis √°talak√≠t√°sa
 	  	 		  	 	  xb -= 1;
 	  	 		  	 	  xb = ~xb;
 	  	 		  	 	  xb=(-1)*xb;
@@ -196,9 +196,11 @@ int main(void)
 
 	  	 		  	 	}
 	  	 	SumX=SumX+xb;*/
-	  	 	dXb+=(((xb*0.00635)*5)/0.1);
+	  	 	dXb+=(((xb*0.00635)*5)/0.1); // az dXb √©rt√©ket kell sz√°moltatni addig am√≠g m√ºk√∂dik a progi
 	  	 	dYb+=(((yb*0.00635)*5)/0.1);
-	  	 	uart_txdatab[0]=dXb;
+	  	 	
+	  
+	  		uart_txdatab[0]=dXb;
 	  	 	uart_txdatab[1]=dYb;
 
 	  	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,1); //LD5
@@ -239,14 +241,14 @@ int main(void)
 	  	 	/*if(y&0x80)
 	  	 	  {
 
-	  	 	  //Az y kÈtkomplement·lis ·talakÌt·sa
+	  	 	  //Az y k√©tkomplement√°lis √°talak√≠t√°sa
 	  	 	  y -= 1;
 	  	 	  y = ~y;
 	  	 	  y=(-1)*y;
 	  	 	  y-=256;
 
 	  	 	}
-	  	 	SumX=SumX+x;             //Felhalmozza az X-et a mobil adatok olvas·s·hoz
+	  	 	SumX=SumX+x;             //Felhalmozza az X-et a mobil adatok olvas√°s√°hoz
 	  	 	SumY=SumY+y;*/
 	  	 	uart_txdataj[0]=dXj;
 	  	 	uart_txdataj[1]=dYj;
