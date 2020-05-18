@@ -37,6 +37,7 @@ uint8_t txbuff[1]={0x50};
 uint8_t buff[7]={0x00,0x00,0x00,0x00,0x00,0x00,0x00};
 uint8_t motion_burst[7];
 volatile HAL_StatusTypeDef state;
+int szamlalo=0;
 int i=0;
 float dXb=0;
 float dYb=0;
@@ -182,10 +183,10 @@ int main(void)
 	  	 	ADNS3080MotionDatab.ShutterUpper=rxdatab[4];
 	  	 	ADNS3080MotionDatab.ShutterLower=rxdatab[5];
 	  	 	ADNS3080MotionDatab.MaximumPixel=rxdatab[6];
-            xb=rxdatab[1];
-            yb=rxdatab[2];
+           		 xb=rxdatab[1];
+          		 yb=rxdatab[2];
 
-	  	 	/*if(xb&0x80)
+	  	 				/*if(xb&0x80)
 	  	 		  	 	  {
 
 	  	 		  	 	  //Az x kétkomplementális átalakítása
@@ -195,11 +196,15 @@ int main(void)
 	  	 		  	 	  xb-=256;
 
 	  	 		  	 	}
-	  	 	SumX=SumX+xb;*/
+	  	 				SumX=SumX+xb;*/
 	  	 	dXb+=(((xb*0.00635)*5)/0.1); // az dXb értéket kell számoltatni addig amíg müködik a progi
 	  	 	dYb+=(((yb*0.00635)*5)/0.1);
-	  	 	
-	  
+	  	 	szamlalo+=dXb sqrt
+	 		
+			int seged = dXb;
+			dxb = dxb * dxb;
+			dxb = dxb / seged;
+	  		
 	  		uart_txdatab[0]=dXb;
 	  	 	uart_txdatab[1]=dYb;
 
