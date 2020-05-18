@@ -252,7 +252,7 @@ int main(void)
 
 	  	 	dXj+=(((SumXj*0.00635)*10)/0.3);	// az dXb átalakitás valós elmozdulásra
 	  	 	dYj+=(((SumYj*0.00635)*10)/0.3);	// az dYb átalakitás valós elmozdulásra							// a pillanatnyi sebbeség kiszámítás 
-	  		sebessegj=(dXj/0.075);         // a pillanatnyi sebbeség kiszámítása
+	  		sebessegj=(dXj/0.15);         // a pillanatnyi sebbeség kiszámítása
 	  	 //az összes megtett út kiszámítása	 
 	  		if(dXj<0){
 		  		dXj*=-1
