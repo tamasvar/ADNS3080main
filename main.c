@@ -199,12 +199,13 @@ int main(void)
 	  	 				SumX=SumX+xb;*/
 	  	 	dXb+=(((xb*0.00635)*5)/0.1); // az dXb értéket kell számoltatni addig amíg müködik a progi
 	  	 	dYb+=(((yb*0.00635)*5)/0.1);
-	  	 	szamlalo+=dXb sqrt
-	 		
-			int seged = dXb;
-			dxb = dxb * dxb;
-			dxb = dxb / seged;
-	  		
+	  
+			  if(dXb<0){
+		  		dXb*=-1
+				  }
+	 		 szamlalo+=dXb 
+				
+		
 	  		uart_txdatab[0]=dXb;
 	  	 	uart_txdatab[1]=dYb;
 
