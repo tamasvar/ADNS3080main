@@ -153,118 +153,123 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //ADNS-3080 bal oldali érzékelő
+	 	  		HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,1); //LD6
+	 	  	     	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_RESET);
+	 	  	 	 HAL_Delay(5);
+	 	  	 	 HAL_SPI_Transmit(&hspi2, txbuff, 1, 10);
+	 	  	 	 HAL_Delay(75);
+	 	  	 	 HAL_SPI_Receive(&hspi2, rxdatab, 7, 10);
+	 	  	 	 HAL_Delay(5);
+	 	  	 	 HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_SET);
+	 	  	 	 HAL_Delay(5);
+	 		//az adatok a tömbe helyezése
+	 	  	 	ADNS3080MotionDatab.Motion=rxdatab[0];
+	 	  	 	ADNS3080MotionDatab.DeltaX=rxdatab[1];
+	 	  	 	ADNS3080MotionDatab.DeltaY=rxdatab[2];
+	 	  	 	ADNS3080MotionDatab.SQUAL=rxdatab[3];
+	 	  	 	ADNS3080MotionDatab.ShutterUpper=rxdatab[4];
+	 	  	 	ADNS3080MotionDatab.ShutterLower=rxdatab[5];
+	 	  	 	ADNS3080MotionDatab.MaximumPixel=rxdatab[6];
+	            	//a tömböl ki veszem a x és y elmozdulást
+	 	  		xb=rxdatab[1];
+	           	yb=rxdatab[2];
+
+	 	  	 		  	/*  //Az x kétkomplementális átalakítása
+	 	  	 		  	 xb -= 1;
+	 	  	 		  	 xb = ~xb;
+	 	  	 		  	 xb=(-1)*xb;
+	 	  	 		  	 xb-=256;
 
 
-	  	 //ADNS-3080 bal oldali érzékelő
-	  		HAL_GPIO_WritePin(GPIOD,GPIO_PIN_15,1); //LD6
-	  	     	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_RESET);
-	  	 	 HAL_Delay(5);
-	  	 	 HAL_SPI_Transmit(&hspi2, txbuff, 1, 10);
-	  	 	 HAL_Delay(75);
-	  	 	 HAL_SPI_Receive(&hspi2, rxdatab, 7, 10);
-	  	 	 HAL_Delay(5);
-	  	 	 HAL_GPIO_WritePin(GPIOE, GPIO_PIN_15, GPIO_PIN_SET);
-	  	 	 HAL_Delay(5);
-		//az adatok a tömbe helyezése
-	  	 	ADNS3080MotionDatab.Motion=rxdatab[0];
-	  	 	ADNS3080MotionDatab.DeltaX=rxdatab[1];
-	  	 	ADNS3080MotionDatab.DeltaY=rxdatab[2];
-	  	 	ADNS3080MotionDatab.SQUAL=rxdatab[3];
-	  	 	ADNS3080MotionDatab.ShutterUpper=rxdatab[4];
-	  	 	ADNS3080MotionDatab.ShutterLower=rxdatab[5];
-	  	 	ADNS3080MotionDatab.MaximumPixel=rxdatab[6];
-           	//a tömböl ki veszem a x és y elmozdulást
-	  		xb=rxdatab[1];
-          		yb=rxdatab[2];
+	 	  	 		SumXb=xb;
 
-	  	 		  	  //Az x kétkomplementális átalakítása
-	  	 		  	 xb -= 1;
-	  	 		  	 xb = ~xb;
-	  	 		  	 xb=(-1)*xb;
-	  	 		  	 xb-=256;
+	 	  	 		  	  //Az y kétkomplementális átalakítása
+	 	  	 		  	 yb -= 1;
+	 	  	 		  	 yb = ~yb;
+	 	  	 		  	 yb=(-1)*yb;
+	 	  	 		  	 yb-=256;
 
-	  	 		  	
-	  	 		SumXb=xb;
-	  
-	  	 		  	  //Az y kétkomplementális átalakítása
-	  	 		  	 yb -= 1;
-	  	 		  	 yb = ~yb;
-	  	 		  	 yb=(-1)*yb;
-	  	 		  	 yb-=256;
 
-	  	 		  	
-	  	 		SumYb=yb;
-	  
-	  	 	dXb+=(((SumXb*0.00635)*5)/0.1); // az dXb átalakitás valós elmozdulásra
-	  	 	dYb+=(((SumYb*0.00635)*5)/0.1); // az dYb átalakitás valós elmozdulásra
-	  		sebessegb=(dXb/0.075);          // a pillanatnyi sebbeség kiszámítása
-		//az összes megtett út kiszámítása	 
-	  		if(dXb<0){
-		  		dXb*=-1
-				  }
-	 		 szamlalob+=dXb; 
-				
-		//a kíszámítot adatok tömbe helyezése aminek az értéket késöbb a robot felhasználja
-	  		uart_txdatab[0]=dXb;
-	  	 	uart_txdatab[1]=dYb;
-			uart_txdatab[2]=szamlalob;
-	 		uart_txdatab[3]=sebessegb;
-	  	 //ADNS-3080 jobb oldali érzékelő
-	  		HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,1); //LD5
-	  	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET);
-	  	 	HAL_Delay(5);
-	  	 	HAL_SPI_Transmit(&hspi2, txbuff, 1, 10);
-	  	 	HAL_Delay(150);
-	  	 	HAL_SPI_Receive(&hspi2, rxdataj, 7, 10);
-	  	 	HAL_Delay(5);
-	  	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_SET);
-	  	 	HAL_Delay(5);
-	  	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,1); //LD4
-		//az adatok a tömbe helyezése			
-	  	 	ADNS3080MotionDataj.Motion=rxdataj[0];
-	  	 	ADNS3080MotionDataj.DeltaX=rxdataj[1];
-	  	 	ADNS3080MotionDataj.DeltaY=rxdataj[2];
-	  	 	ADNS3080MotionDataj.SQUAL=rxdataj[3];
-	  	 	ADNS3080MotionDataj.ShutterUpper=rxdataj[4];
-	  	 	ADNS3080MotionDataj.ShutterLower=rxdataj[5];
-	  	 	ADNS3080MotionDataj.MaximumPixel=rxdataj[6];
-	  	 //a tömböl ki veszem a x és y elmozdulást
-	  		xj=rxdataj[1];
-          		yj=rxdataj[2];
+	 	  	 		SumYb=yb;
+*/
+	 	  	 	dXb+=((xb*0.00635)*15.748031496062); // az dXb átalakitás valós elmozdulásra
+	 	  	 	dYb+=((yb*0.00635)*15.748031496062); // az dYb átalakitás valós elmozdulásra
+	 	  	 	uart_txdatab[0]=dXb;
+	 	  	 	uart_txdatab[1]=dYb;
 
-	  	 		  	  //Az x kétkomplementális átalakítása
-	  	 		  	 xj -= 1;
-	  	 		  	 xj = ~xj;
-	  	 		  	 xj=(-1)*xj;
-	  	 		  	 xj-=256;
+	 	  	 	if(rxdatab[0]==128){
+	 	  	 		sebessegb=(dXb/0.075);          // a pillanatnyi sebbeség kiszámítása
+	 		//az összes megtett út kiszámítása
+	 	  		if(dXb<0){
+	 		  		dXb*=-1;
+	 				  }
+	 	 		 szamlalob+=dXb;
+	 	  	 	}
+	 	  	 	
+	 		//a kíszámítot adatok tömbe helyezése aminek az értéket késöbb a robot felhasználja
 
-	  	 		  	
-	  	 		SumXj=xj;
-	  
-	  	 		  	  //Az y kétkomplementális átalakítása
-	  	 		  	 yj -= 1;
-	  	 		  	 yj = ~yj;
-	  	 		  	 yj=(-1)*yj;
-	  	 		  	 yj-=256;
+	 			uart_txdatab[2]=szamlalob;
+	 	 		uart_txdatab[3]=sebessegb;
+	 	  	 //ADNS-3080 jobb oldali érzékelő
+	 	  		HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,1); //LD5
+	 	  	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET);
+	 	  	 	HAL_Delay(5);
+	 	  	 	HAL_SPI_Transmit(&hspi2, txbuff, 1, 10);
+	 	  	 	HAL_Delay(150);
+	 	  	 	HAL_SPI_Receive(&hspi2, rxdataj, 7, 10);
+	 	  	 	HAL_Delay(5);
+	 	  	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_SET);
+	 	  	 	HAL_Delay(5);
+	 	  	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,1); //LD4
+	 		//az adatok a tömbe helyezése
+	 	  	 	ADNS3080MotionDataj.Motion=rxdataj[0];
+	 	  	 	ADNS3080MotionDataj.DeltaX=rxdataj[1];
+	 	  	 	ADNS3080MotionDataj.DeltaY=rxdataj[2];
+	 	  	 	ADNS3080MotionDataj.SQUAL=rxdataj[3];
+	 	  	 	ADNS3080MotionDataj.ShutterUpper=rxdataj[4];
+	 	  	 	ADNS3080MotionDataj.ShutterLower=rxdataj[5];
+	 	  	 	ADNS3080MotionDataj.MaximumPixel=rxdataj[6];
+	 	  	 //a tömböl ki veszem a x és y elmozdulást
+	 	  		xj=rxdataj[1];
+	           	yj=rxdataj[2];
 
-	  	 		  	
-	  	 		SumYj=yj;
+	 	  	 		 	/*  //Az x kétkomplementális átalakítása
+	 	  	 		  	 xj -= 1;
+	 	  	 		  	 xj = ~xj;
+	 	  	 		  	 xj=(-1)*xj;
+	 	  	 		  	 xj-=256;
 
-	  	 	dXj+=(((SumXj*0.00635)*10)/0.3);	// az dXb átalakitás valós elmozdulásra
-	  	 	dYj+=(((SumYj*0.00635)*10)/0.3);	// az dYb átalakitás valós elmozdulásra							// a pillanatnyi sebbeség kiszámítás 
-	  		sebessegj=(dXj/0.15);         // a pillanatnyi sebbeség kiszámítása
-	  	 //az összes megtett út kiszámítása	 
-	  		if(dXj<0){
-		  		dXj*=-1
-				  }
-	 		 szamlaloj+=dXj; 				
-		//a kíszámítot adatok tömbe helyezése aminek az értéket késöbb a robot felhasználja  	 	
-	  	 	uart_txdataj[0]=dXj;
-	  	 	uart_txdataj[1]=dYj;
-	 		uart_txdataj[2]=szamlaloj;
-	 		uart_txdataj[3]=sebessegj;
-	  	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,1); //LD3
-	  	 	//HAL_UART_Transmit(&huart2,uart_txdata,2,10);
+
+	 	  	 		SumXj=xj;
+
+	 	  	 		  	  //Az y kétkomplementális átalakítása
+	 	  	 		  	 yj -= 1;
+	 	  	 		  	 yj = ~yj;
+	 	  	 		  	 yj=(-1)*yj;
+	 	  	 		  	 yj-=256;
+
+
+	 	  	 		SumYj=yj;
+*/
+	 	  	 	dXj+=((xj*0.00635)*14.316392269148);	// az dXb átalakitás valós elmozdulásra
+	 	  	 	dYj+=((yj*0.00635)*14.316392269148);	// az dYb átalakitás valós elmozdulásra							// a pillanatnyi sebbeség kiszámítás
+	 	  	 	uart_txdataj[0]=dXj;
+	 	  	 	uart_txdataj[1]=dYj;
+
+	 	  	 	if(rxdataj[0]==128){
+	 	  	 	sebessegj=(dXj/0.15);         // a pillanatnyi sebbeség kiszámítása
+	 	  	 			//az összes megtett út kiszámítása
+	 	  		if(dXj<0){
+	 		  		dXj*=-1;
+	 				  }
+	 	 		 szamlaloj+=dXj;
+	 	  	 }
+	 		//a kíszámítot adatok tömbe helyezése aminek az értéket késöbb a robot felhasználja
+
+	 	 		uart_txdataj[2]=szamlaloj;
+	 	 		uart_txdataj[3]=sebessegj;
+	 	  	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,1); //LD3
 
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
