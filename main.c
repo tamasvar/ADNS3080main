@@ -39,6 +39,8 @@ uint8_t motion_burst[7];
 volatile HAL_StatusTypeDef state;
 int szamlalob=0; //össz megtet út
 int szamlaloj=0; //össz megtet út
+float sdXb=0;
+float sdXj=0;
 float sebessegb=0; // pillanatnyi sebbeség
 float sebessegj=0; // pillanatnyi sebbeség
 float dXb=0; // a valós elmozdulás
@@ -197,26 +199,27 @@ int main(void)
 	 	  	 	dYb+=((yb*0.00635)*15.748031496062); // az dYb átalakitás valós elmozdulásra
 	 	  	 	uart_txdatab[0]=dXb;
 	 	  	 	uart_txdatab[1]=dYb;
-
+	 	  	 	sdXb=dXb;
 	 	  	 	if(rxdatab[0]==128){
-	 	  	 		sebessegb=(dXb/0.075);          // a pillanatnyi sebbeség kiszámítása
-	 		//az összes megtett út kiszámítása
+	 	  	 		sebessegb=(sdXb/0.090);          // a pillanatnyi sebbeség kiszámítása
+	 	  	 	//az összes megtett út kiszámítása
 	 	  		if(dXb<0){
-	 		  		dXb*=-1;
+	 		  		sdXb*=-1;
 	 				  }
-	 	 		 szamlalob+=dXb;
-	 	  	 	}
-	 	  	 	
+	 	 		 szamlalob+=sdXb;
+	 	  	 	}else dXb=0;
+
 	 		//a kíszámítot adatok tömbe helyezése aminek az értéket késöbb a robot felhasználja
 
 	 			uart_txdatab[2]=szamlalob;
 	 	 		uart_txdatab[3]=sebessegb;
+	 	 		sebessegb=0;
 	 	  	 //ADNS-3080 jobb oldali érzékelő
 	 	  		HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,1); //LD5
 	 	  	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET);
 	 	  	 	HAL_Delay(5);
 	 	  	 	HAL_SPI_Transmit(&hspi2, txbuff, 1, 10);
-	 	  	 	HAL_Delay(150);
+	 	  	 	HAL_Delay(75);
 	 	  	 	HAL_SPI_Receive(&hspi2, rxdataj, 7, 10);
 	 	  	 	HAL_Delay(5);
 	 	  	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_SET);
@@ -256,19 +259,20 @@ int main(void)
 	 	  	 	dYj+=((yj*0.00635)*14.316392269148);	// az dYb átalakitás valós elmozdulásra							// a pillanatnyi sebbeség kiszámítás
 	 	  	 	uart_txdataj[0]=dXj;
 	 	  	 	uart_txdataj[1]=dYj;
-
+	 	  	 	sdXj=dXj;
 	 	  	 	if(rxdataj[0]==128){
-	 	  	 	sebessegj=(dXj/0.15);         // a pillanatnyi sebbeség kiszámítása
+	 	  	 		sebessegj=(sdXj/0.090);         // a pillanatnyi sebbeség kiszámítása
 	 	  	 			//az összes megtett út kiszámítása
 	 	  		if(dXj<0){
-	 		  		dXj*=-1;
+	 		  		sdXj*=-1;
 	 				  }
-	 	 		 szamlaloj+=dXj;
-	 	  	 }
+	 	 		 szamlaloj+=sdXj;
+	 	 		}else dXj=0;
 	 		//a kíszámítot adatok tömbe helyezése aminek az értéket késöbb a robot felhasználja
 
 	 	 		uart_txdataj[2]=szamlaloj;
 	 	 		uart_txdataj[3]=sebessegj;
+	 	 		sebessegj=0;
 	 	  	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,1); //LD3
 
     /* USER CODE END WHILE */
@@ -363,3 +367,4 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
