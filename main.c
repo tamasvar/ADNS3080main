@@ -195,13 +195,13 @@ int main(void)
 
 	 	  	 		SumYb=yb;
 */
-	 	  	 	dXb+=((xb*0.00635)*15.748031496062); // az dXb átalakitás valós elmozdulásra
-	 	  	 	dYb+=((yb*0.00635)*15.748031496062); // az dYb átalakitás valós elmozdulásra
+	 	  	 	dXb=((xb*0.00635)*15.748031496062); // az dXb átalakitás valós elmozdulásra
+	 	  	 	dYb=((yb*0.00635)*15.748031496062); // az dYb átalakitás valós elmozdulásra
 	 	  	 	uart_txdatab[0]=dXb;
 	 	  	 	uart_txdatab[1]=dYb;
 	 	  	 	sdXb=dXb;
 	 	  	 	if(rxdatab[0]==128){
-	 	  	 		sebessegb=(sdXb/0.090);          // a pillanatnyi sebbeség kiszámítása
+	 	  	 		sebessegb=(sdXb/0.075);          // a pillanatnyi sebbeség kiszámítása
 	 	  	 	//az összes megtett út kiszámítása
 	 	  		if(dXb<0){
 	 		  		sdXb*=-1;
@@ -213,7 +213,7 @@ int main(void)
 
 	 			uart_txdatab[2]=szamlalob;
 	 	 		uart_txdatab[3]=sebessegb;
-	 	 		sebessegb=0;
+
 	 	  	 //ADNS-3080 jobb oldali érzékelő
 	 	  		HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,1); //LD5
 	 	  	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET);
@@ -255,13 +255,13 @@ int main(void)
 
 	 	  	 		SumYj=yj;
 */
-	 	  	 	dXj+=((xj*0.00635)*14.316392269148);	// az dXb átalakitás valós elmozdulásra
-	 	  	 	dYj+=((yj*0.00635)*14.316392269148);	// az dYb átalakitás valós elmozdulásra							// a pillanatnyi sebbeség kiszámítás
+	 	  	 	dXj=((xj*0.00635)*14.316392269148);	// az dXb átalakitás valós elmozdulásra
+	 	  	 	dYj=((yj*0.00635)*14.316392269148);	// az dYb átalakitás valós elmozdulásra							// a pillanatnyi sebbeség kiszámítás
 	 	  	 	uart_txdataj[0]=dXj;
 	 	  	 	uart_txdataj[1]=dYj;
 	 	  	 	sdXj=dXj;
 	 	  	 	if(rxdataj[0]==128){
-	 	  	 		sebessegj=(sdXj/0.090);         // a pillanatnyi sebbeség kiszámítása
+	 	  	 		sebessegj=(sdXj/0.075);         // a pillanatnyi sebbeség kiszámítása
 	 	  	 			//az összes megtett út kiszámítása
 	 	  		if(dXj<0){
 	 		  		sdXj*=-1;
@@ -272,7 +272,7 @@ int main(void)
 
 	 	 		uart_txdataj[2]=szamlaloj;
 	 	 		uart_txdataj[3]=sebessegj;
-	 	 		sebessegj=0;
+
 	 	  	 	HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,1); //LD3
 
     /* USER CODE END WHILE */
@@ -367,4 +367,3 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-
