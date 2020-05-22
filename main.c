@@ -123,18 +123,19 @@ void szamlalasb(void){
 		 	  	 	uart_txdatab[0]=dXb;
 		 	  	 	uart_txdatab[1]=dYb;
 		 	  	 	sdXb=dXb;
-		 	  	 /*	sumb+=dXb;
-		 	  	 			i+=1;
+
+		 	  	 	if(rxdatab[0]==128){
+		 	  	 		for(i=0;i<13;i++){
+		 	  	 		sumb+=dXb;
+		 	  	 			}
 							if (i==13){
 								sebessegb=(sumb/100);
 								sumb=0;
 								i=0;
 							}
-*/
-		 	  	 	if(rxdatab[0]==128){
 
 
-		 	  	 		sebessegb=((sdXb/100)/0.075);          // a pillanatnyi sebbeség kiszámítása
+		 	  	 		//sebessegb=((sdXb/100)/0.075);          // a pillanatnyi sebbeség kiszámítása
 		 	  	 	//az összes megtett út kiszámítása
 		 	  		if(dXb<0){
 		 		  		sdXb*=-1;
@@ -167,15 +168,18 @@ void szamlalasj(void){
 		 	  	 	uart_txdataj[0]=dXj;
 		 	  	 	uart_txdataj[1]=dYj;
 		 	  	 	sdXj=dXj;
-		 	  	 	/*sumj+=dXj;
-		 	  	 		 	  	 j+=1;
+
+		 	  	 	if(rxdataj[0]==128){
+		 	  	 	for(j=0;j<13;j++){
+		 	  	 		 	  	sumj+=dXj;
+		 	  	 		 	  	 }
 		 	  	 			if (j==13){
 		 	  	 					sebessegj=(sumj/100);
 		 	  	 					sumj=0;
 		 	  	 					j=0;
-		 	  	 			}*/
-		 	  	 	if(rxdataj[0]==128){
-		 	  	 		sebessegj=((sdXj/100)/0.075);         // a pillanatnyi sebbeség kiszámítása
+		 	  	 			}
+
+		 	  	 		//sebessegj=((sdXj/100)/0.075);         // a pillanatnyi sebbeség kiszámítása
 		 	  	 			//az összes megtett út kiszámítása
 		 	  		if(dXj<0){
 		 		  		sdXj*=-1;
@@ -352,3 +356,4 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
