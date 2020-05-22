@@ -53,11 +53,10 @@ signed char xb=0; // a nyers adat amivel számolok
 signed char yb=0;
 signed char xj=0;
 signed char yj=0; // a nyers adat amivel számolok
-signed char SumXb=0; // nyers adat kétkomplementális átalakítása
-signed char SumYb=0;
-signed char SumXj=0;
-signed char SumYj=0; // nyers adat kétkomplementális átalakítása
+float sumb=0;
+float sumj=0;
 int i=0;
+int j=0;
 float uart_txdatab[4]; //az eredmény tömb ahol az adatokat felhasználom
 float uart_txdataj[4]; //az eredmény tömb ahol az adatokat felhasználom
 /*
@@ -101,6 +100,10 @@ void MX_USB_HOST_Process(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void my_delay(void){
+	for(i=0;i<200;i++){
+			}
+}
 void szamlalasb(void){
 	//az adatok a tömbe helyezése
 					ADNS3080MotionDatab.Motion=rxdatab[0];
@@ -120,8 +123,18 @@ void szamlalasb(void){
 		 	  	 	uart_txdatab[0]=dXb;
 		 	  	 	uart_txdatab[1]=dYb;
 		 	  	 	sdXb=dXb;
+		 	  	 	sumb+=dXb;
+		 	  	 			i+=1;
+							if (i==13){
+								sebessegb=(sumb*10)/(1);
+								sumb=0;
+								i=0;
+							}
+
 		 	  	 	if(rxdatab[0]==128){
-		 	  	 		sebessegb=(sdXb/0.075);          // a pillanatnyi sebbeség kiszámítása
+
+
+		 	  	 		//sebessegb=(sdXb/0.075);          // a pillanatnyi sebbeség kiszámítása
 		 	  	 	//az összes megtett út kiszámítása
 		 	  		if(dXb<0){
 		 		  		sdXb*=-1;
@@ -154,8 +167,15 @@ void szamlalasj(void){
 		 	  	 	uart_txdataj[0]=dXj;
 		 	  	 	uart_txdataj[1]=dYj;
 		 	  	 	sdXj=dXj;
+		 	  	 	sumj+=dXj;
+		 	  	 		 	  	 j+=1;
+		 	  	 			if (j==13){
+		 	  	 					sebessegj=(sumj*10)/(1);
+		 	  	 					sumj=0;
+		 	  	 					j=0;
+		 	  	 			}
 		 	  	 	if(rxdataj[0]==128){
-		 	  	 		sebessegj=(sdXj/0.075);         // a pillanatnyi sebbeség kiszámítása
+		 	  	 		//sebessegj=(sdXj/0.075);         // a pillanatnyi sebbeség kiszámítása
 		 	  	 			//az összes megtett út kiszámítása
 		 	  		if(dXj<0){
 		 		  		sdXj*=-1;
@@ -186,6 +206,7 @@ void erzekeloj(void){
 	 	HAL_SPI_Receive(&hspi2, rxdataj, 7, 10);
 	 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_SET);
 }
+
 /* USER CODE END 0 */
 
 /**
@@ -233,6 +254,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	  	  	  	  erzekelob();      //az érzékelőnek küldött és kapott
 	 	  	 	 szamlalasb();	 	// az adat feldolgozás és ki iratás
 	 	  	 	 erzekeloj();		//az érzékelőnek küldött és kapott
@@ -330,4 +352,5 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
 
